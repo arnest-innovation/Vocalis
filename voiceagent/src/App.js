@@ -1,4 +1,4 @@
-import VoiceAgent from "./VoiceAgent";
+import VoiceAgent from "./component/VoiceAgent/VoiceAgent";
 
 function App() {
   return (
