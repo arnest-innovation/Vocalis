@@ -44,7 +44,7 @@ def generate_response(user_input, user_id):
     
     if user_id not in conversation_history:
         conversation_history[user_id] = []
-        user_input = prompt + user_input
+        user_input = prompt +"\n\n" + user_input
 
     conversation_history[user_id].append({"role": "user", "content": user_input})
     
