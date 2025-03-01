@@ -23,6 +23,7 @@
 /voiceagent/yarn-error.log*
 
 /.venv
+/venv
 
 
 backend/output

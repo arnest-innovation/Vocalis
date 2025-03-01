@@ -80,7 +80,7 @@ def upload_audio():
     audio_output_path = os.path.join(OUTPUT_FOLDER, "response.mp3")
     speak_text(response_text, audio_output_path)
 
-    return jsonify({"transcript": transcript, "response": response_text, "audio_url": "/get-audio"})
+    return jsonify({"response": conversation_history, "audio_url": "/get-audio"})
 
 # Route to serve the AI-generated audio file
 @app.route("/get-audio", methods=["GET"])
