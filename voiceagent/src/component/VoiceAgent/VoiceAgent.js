@@ -75,7 +75,7 @@ export default function VoiceAgent() {
           response
             ?.filter((type) => type.role === "user")
             ?.map((item, index) => (
-              <div key={index} className="sticky-header">
+              <div key={index} className="content">
                 {item.content}
               </div>
             ))}

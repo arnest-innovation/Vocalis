@@ -64,7 +64,8 @@
   font-size: large;
 }
 .content {
-  flex: 1;
+  /* flex: 1; */
+  margin: 4px;
   overflow-y: auto;
 }
 .glow-on-hover {
