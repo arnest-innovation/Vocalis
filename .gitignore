@@ -21,3 +21,9 @@
 /voiceagent/npm-debug.log*
 /voiceagent/yarn-debug.log*
 /voiceagent/yarn-error.log*
+
+/.venv
+
+
+backend/output
+backend/uploads

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import axios from "axios";
 
 export default function VoiceAgent() {
   const [recording, setRecording] = useState(false);
@@ -18,6 +19,7 @@ export default function VoiceAgent() {
     };
 
     mediaRecorder.onstop = async () => {
+      setAudioUrl(null);
       const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
       const formData = new FormData();
       formData.append("file", audioBlob, "recorded_audio.wav");
@@ -25,18 +27,19 @@ export default function VoiceAgent() {
       setResponse("Processing...");
 
       try {
-        const res = await fetch("http://localhost:5000/upload-audio", {
-          method: "POST",
-          body: formData,
+        const res = await axios.post("http://127.0.0.1:5000/upload-audio", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         });
-
-        const data = await res.json();
+      
+        const data = res.data;
         setResponse(data.response);
-        setAudioUrl("http://localhost:5000/get-audio"); // Set audio URL
-
+        console.log(data.response, "faya");
+        setAudioUrl("http://127.0.0.1:5000/get-audio"); // Set audio URL
+      
         // Play the response audio automatically
-        const audio = new Audio("http://localhost:5000/get-audio");
-        audio.play();
+        // const audio = new Audio("http://127.0.0.1:5000/get-audio");
       } catch (error) {
         console.error("Error:", error);
         setResponse("Error occurred");
