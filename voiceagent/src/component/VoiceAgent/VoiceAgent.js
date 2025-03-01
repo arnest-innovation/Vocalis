@@ -31,8 +31,6 @@ export default function VoiceAgent() {
       formData.append("file", audioBlob, "recorded_audio.wav");
       formData.append("user_id", userId);
 
-      setResponse("Processing...");
-
       try {
         const res = await axios.post(
           "http://127.0.0.1:5000/upload-audio",
@@ -72,30 +70,19 @@ export default function VoiceAgent() {
   return (
     <div className="container">
       <div className="box recorder">
-        {/* <button
-          type="button"
-          onClick={recording ? stopRecording : startRecording}
-          class="glow-on-hover"
-        >
-          {recording ? "Stop Recording" : "Start Recording"}
-        </button> */}
-        user
-        {/* {response?.filter((item) =>
-          item.role === "user" ? <div>{item.content} </div> : ""
-        )} */}
-        {/* <p className="mt-4 text-lg font-semibold">{response}</p> */}
+        <h5>User</h5>
+        {response &&
+          response
+            ?.filter((type) => type.role === "user")
+            ?.map((item, index) => (
+              <div key={index} class="content">
+                {item.content}
+              </div>
+            ))}
       </div>
       {isLoading === true ? (
-        <div class="box mix">
-          <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/KTonvXhsxpc?si=Gc2IHf43bDnMz53Q"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-          ></iframe>
+        <div className="box mix loader-container">
+          <div className="loader"></div>
         </div>
       ) : (
         <div class="box mix">
@@ -115,14 +102,14 @@ export default function VoiceAgent() {
         </div>
       )}
       <div class="box client">
-        client
-        {response && Array.isArray(response) ? (
-          response.map((res) => {
-            return <p>{res.content}</p>;
-          })
-        ) : (
-          <p>{response}</p>
-        )}
+        <h5>Assistant</h5>
+
+        {response &&
+          response
+            ?.filter((type) => type.role === "assistant")
+            ?.map((item, index) => (
+              <div key={index}>{item.content.slice(0, 500)}</div>
+            ))}
       </div>
 
       {/* Show a play button if audio is available */}
