@@ -79,12 +79,12 @@ export default function VoiceAgent() {
       <div class="box client">client</div>
 
       {/* Show a play button if audio is available */}
-      {audioUrl && (
+      {/* {audioUrl && (
         <audio controls autoPlay>
           <source src={audioUrl} type="audio/mp3" />` Your browser does not
           support the audio tag. `{" "}
         </audio>
-      )}
+      )} */}
     </div>
   );
 }
