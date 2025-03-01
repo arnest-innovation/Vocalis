@@ -10,54 +10,55 @@ export default function VoiceAgent() {
   const audioChunksRef = useRef([]);
 
   const startRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mediaRecorder = new MediaRecorder(stream);
-    mediaRecorderRef.current = mediaRecorder;
-    audioChunksRef.current = [];
-
-    mediaRecorder.ondataavailable = (event) => {
-      audioChunksRef.current.push(event.data);
-    };
-
-    mediaRecorder.onstop = async () => {
-      setIsLoading(true);
+    try {
       setAudioUrl(null);
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
 
-      const userId = "manoj";
-      const audioBlob = new Blob(audioChunksRef.current, {
-        type: "audio/wav",
-      });
-      const formData = new FormData();
-      formData.append("file", audioBlob, "recorded_audio.wav");
-      formData.append("user_id", userId);
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunksRef.current.push(event.data);
+      };
 
-      try {
-        const res = await axios.post(
-          "http://127.0.0.1:5000/upload-audio",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+      mediaRecorder.onstop = async () => {
+        setIsLoading(true);
+        const userId = "manoj";
+        const audioBlob = new Blob(audioChunksRef.current, {
+          type: "audio/wav",
+        });
+        const formData = new FormData();
+        formData.append("file", audioBlob, "recorded_audio.wav");
+        formData.append("user_id", userId);
 
-        const data = res.data;
-        setResponse(data.response[userId]);
-        console.log(data.response[userId], "faya");
-        setAudioUrl("http://127.0.0.1:5000/get-audio"); // Set audio URL
-        setIsLoading(false);
-        // Play the response audio automatically
-        // const audio = new Audio("http://127.0.0.1:5000/get-audio");
-      } catch (error) {
-        console.error("Error:", error);
-        setResponse("Error occurred");
-        setIsLoading(false);
-      }
-    };
+        try {
+          const res = await axios.post(
+            "http://127.0.0.1:5000/upload-audio",
+            formData,
+            {
+              headers: { "Content-Type": "multipart/form-data" },
+            }
+          );
 
-    mediaRecorder.start();
-    setRecording(true);
+          const data = res.data;
+          setResponse(data); // Fixed incorrect indexing
+          const currentTime = Date.now();
+          setAudioUrl(
+            `http://localhost:5000/get-audio?currentTime=${currentTime}`
+          );
+        } catch (error) {
+          console.error("Error:", error);
+          setResponse("Error occurred");
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      mediaRecorder.start();
+      setRecording(true);
+    } catch (error) {
+      console.error("Error accessing microphone:", error);
+    }
   };
 
   const stopRecording = () => {
@@ -93,7 +94,7 @@ export default function VoiceAgent() {
           >
             {recording ? "Stop Recording" : "Start Recording"}
           </button>
-          {audioUrl && (
+          {audioUrl && !isLoading && (
             <audio controls autoPlay>
               <source src={audioUrl} type="audio/mp3" />` Your browser does not
               support the audio tag. `{" "}

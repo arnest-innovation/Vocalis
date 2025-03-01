@@ -1,7 +1,5 @@
 from flask import Flask, request, jsonify, send_file
 import asyncio
-import json
-import requests
 import os
 from deepgram import Deepgram
 from elevenlabs.client import ElevenLabs
@@ -13,11 +11,10 @@ from gtts import gTTS
 
 # API Keys
 DEEPGRAM_API_KEY = "f0c1d4112e632d5d72472738638430e5ce21d406"
-# ELEVENLABS_API_KEY = "sk_c8f6dffd5afcea0c6ac80450542eeed5d0aec09e6f103203"
 MODEL_NAME = "deepseek-r1"  # Choose the correct model variant
 
+# ELEVENLABS_API_KEY = "sk_c8f6dffd5afcea0c6ac80450542eeed5d0aec09e6f103203"
 # client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
-
 
 conversation_history = {}
 
@@ -36,14 +33,19 @@ async def transcribe_audio(audio_path):
         response = await deepgram.transcription.prerecorded(
             {"buffer": audio_file, "mimetype": "audio/wav"}, {"punctuate": True}
         )
-    print(response)
+    print(response["results"]["channels"][0]["alternatives"][0]["transcript"])
     return response["results"]["channels"][0]["alternatives"][0]["transcript"]
 
 # Function to generate AI response using Deepseek
 def generate_response(user_input, user_id):
+
+    prompt = f"""You are a customer support agent for Arnest. Respond professionally, provide clear help, and escalate if needed.
+        Now, respond to: [Customer Inquiry]."""
+    
     if user_id not in conversation_history:
         conversation_history[user_id] = []
-    
+        user_input = prompt + user_input
+
     conversation_history[user_id].append({"role": "user", "content": user_input})
     
     response = chat(model=MODEL_NAME, messages=conversation_history[user_id])
@@ -58,7 +60,6 @@ def generate_response(user_input, user_id):
 def speak_text(response_text, output_path):
     audio = gTTS(text=response_text, lang="en", slow=False)
     audio.save(output_path)
-
 
 # Route to handle audio upload and response generation
 @app.route("/upload-audio", methods=["POST"])
