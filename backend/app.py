@@ -8,14 +8,17 @@ from elevenlabs.client import ElevenLabs
 from ollama import chat
 from flask_cors import CORS
 import re
+from gtts import gTTS
 
 
 # API Keys
 DEEPGRAM_API_KEY = "f0c1d4112e632d5d72472738638430e5ce21d406"
-ELEVENLABS_API_KEY = "sk_c8f6dffd5afcea0c6ac80450542eeed5d0aec09e6f103203"
+# ELEVENLABS_API_KEY = "sk_c8f6dffd5afcea0c6ac80450542eeed5d0aec09e6f103203"
 MODEL_NAME = "deepseek-r1"  # Choose the correct model variant
 
-client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+# client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+
+
 conversation_history = {}
 
 app = Flask(__name__)
@@ -53,10 +56,8 @@ def generate_response(user_input, user_id):
     
 # Function to convert text to speech and save as an audio file
 def speak_text(response_text, output_path):
-    audio = client.generate(text=response_text, voice="2yEwOXNJow56OfkHEOM9")
-    with open(output_path, "wb") as f:
-        for chunk in audio:  # Iterate through the generator
-            f.write(chunk)
+    audio = gTTS(text=response_text, lang="en", slow=False)
+    audio.save(output_path)
 
 
 # Route to handle audio upload and response generation

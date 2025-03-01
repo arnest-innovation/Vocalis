@@ -41,7 +41,6 @@ export default function VoiceAgent() {
 
         const data = res.data;
         setResponse(data.response[userId]);
-        console.log(data.response[userId], "faya");
         setAudioUrl("http://127.0.0.1:5000/get-audio"); // Set audio URL
 
         // Play the response audio automatically
