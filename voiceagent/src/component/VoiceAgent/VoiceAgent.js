@@ -41,7 +41,7 @@ export default function VoiceAgent() {
           );
 
           const data = res.data;
-          setResponse(data); // Fixed incorrect indexing
+          setResponse(data.response[userId]); // Fixed incorrect indexing
           const currentTime = Date.now();
           setAudioUrl(
             `http://localhost:5000/get-audio?currentTime=${currentTime}`
