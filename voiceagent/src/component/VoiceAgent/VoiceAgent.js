@@ -70,12 +70,12 @@ export default function VoiceAgent() {
   return (
     <div className="container">
       <div className="box recorder">
-        <h5>User</h5>
+        <h5 className="sticky-header">User</h5>
         {response &&
           response
             ?.filter((type) => type.role === "user")
             ?.map((item, index) => (
-              <div key={index} class="content">
+              <div key={index} className="sticky-header">
                 {item.content}
               </div>
             ))}
@@ -102,23 +102,17 @@ export default function VoiceAgent() {
         </div>
       )}
       <div class="box client">
-        <h5>Assistant</h5>
+        <h5 className="sticky-header">Assistant</h5>
 
         {response &&
           response
             ?.filter((type) => type.role === "assistant")
             ?.map((item, index) => (
-              <div key={index}>{item.content.slice(0, 500)}</div>
+              <div className="content" key={index}>
+                {item.content.slice(0, 500)}
+              </div>
             ))}
       </div>
-
-      {/* Show a play button if audio is available */}
-      {/* {audioUrl && (
-        <audio controls autoPlay>
-          <source src={audioUrl} type="audio/mp3" />` Your browser does not
-          support the audio tag. `{" "}
-        </audio>
-      )} */}
     </div>
   );
 }
